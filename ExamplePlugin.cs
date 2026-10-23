@@ -14,19 +14,37 @@ public sealed class ExamplePlugin : ImlightPlugin {
     public override string Version => "1.0.0";
 
     public override void OnEnable() {
-        Events.Subscribe<PlayerZoneEnterEvent>(e => e.Player.SendMessage($"Welcome to {e.Zone}, {e.Player.Name}!"));
+        Events.Subscribe<PlayerZoneEnterEvent>(e => e.Player.SendMessage($"Welcome to {e.Zone.Name}, {e.Player.Name}!"));
 
         Events.Subscribe<PlayerChatEvent>(e => {
             if (e.Message.Contains("badword", StringComparison.OrdinalIgnoreCase)) {
                 e.IsCancelled = true;
                 e.Player.SendMessage("Your message was not sent because it contains a blocked word.");
             }
-
-            if (e.Message.ToLower().Equals("ping")) {
-                e.IsCancelled = true;
-                e.Player.SendMessage("Pong!");
-            }
         });
+
+        Commands.Register("ping", c => c.Reply("Pong!"), aliases: ["boing"]);
+        Commands.Register("broadcast", c => broadcast(c.RawArgs, c.Player.Zone));
+        Commands.Register("poke", c => poke(c.Args[0], c.Args[1], c.Player, c.Player.Zone));
+    }
+
+    private void broadcast(string message, IZone? zone) {
+        if (zone is null) return;
+        foreach (IPlayer player in zone.Players) {
+            player.SendMessage(message);
+        }
+    }
+
+    private void poke(string firstName, string lastName, IPlayer originPlayer, IZone? zone) {
+        if (zone is null) return;
+        string playerName = firstName + " " + lastName;
+        foreach (IPlayer player in zone.Players) {
+            // note that there can be multiple players with the same Wizard name
+            // future builds will have a more player-friendly intuitive way to select players via a chat command
+            if (player.Name.ToLower().Equals(playerName)) {
+                player.SendMessage($"{originPlayer.Name} has poked you!");
+            }
+        }
     }
 
 }
