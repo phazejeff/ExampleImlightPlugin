@@ -24,7 +24,7 @@ public sealed class ExamplePlugin : ImlightPlugin {
         });
 
         Commands.Register("ping", c => c.Reply("Pong!"), aliases: ["boing"]);
-        Commands.Register("broadcast", c => broadcast(c.RawArgs, c.Player.Zone));
+        Commands.Register("broadcast", c => broadcast(c.RawArgs, c.Player.Zone), permission: Imlight.PluginApi.Commands.CommandPermission.HallMonitor);
         Commands.Register("poke", c => poke(c.Args[0], c.Args[1], c.Player, c.Player.Zone));
     }
 
