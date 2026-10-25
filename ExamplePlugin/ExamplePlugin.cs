@@ -14,14 +14,17 @@ public sealed class ExamplePlugin : ImlightPlugin {
     public override string Version => "1.0.0";
 
     public override void OnEnable() {
-        Events.Subscribe<PlayerZoneEnterEvent>(e => e.Player.SendMessage($"Welcome to {e.Zone.Name}, {e.Player.Name}!"));
+        Events.Subscribe<OnPlayerZoneEnter>(e => e.Player.SendMessage($"Welcome to {e.Zone.Name}, {e.Player.Name}!"));
 
-        Events.Subscribe<PlayerChatEvent>(e => {
+        Events.Subscribe<OnPlayerChat>(e => {
             if (e.Message.Contains("badword", StringComparison.OrdinalIgnoreCase)) {
                 e.IsCancelled = true;
                 e.Player.SendMessage("Your message was not sent because it contains a blocked word.");
             }
         });
+
+        Events.Subscribe<OnPlayerDamage>(e => e.Player.SendMessage($"You took {e.Damage}"));
+        Events.Subscribe<OnPlayerKnockout>(e => e.Player.SendMessage($"You have been knocked out"));
 
         Commands.Register("ping", c => c.Reply("Pong!"), aliases: ["boing"]);
         Commands.Register("broadcast", c => broadcast(c.RawArgs, c.Player.Zone), permission: Imlight.PluginApi.Commands.CommandPermission.HallMonitor);
