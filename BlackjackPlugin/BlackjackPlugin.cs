@@ -17,7 +17,6 @@ public sealed class BlackjackPlugin : ImlightPlugin {
     private const int MinBet = 10;
     private const int MaxBet = 10000;
 
-    // One hand per character. Commands can arrive from several zones at once, so every access is locked.
     private readonly Dictionary<ulong, BlackjackGame> games = [];
     private readonly object gamesLock = new();
 
