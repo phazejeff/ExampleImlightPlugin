@@ -9,7 +9,7 @@ namespace BlackjackPlugin;
 /// Lets players bet gold on a hand of blackjack against the dealer.
 /// </summary>
 /// <remarks>
-/// /bj &lt;bet&gt; deals a hand, then /bj hit, /bj stand or /bj double plays it.
+/// .bj &lt;bet&gt; deals a hand, then .bj hit, .bj stand or .bj double plays it.
 /// A win pays 1:1 and a natural blackjack pays 3:2.
 /// </remarks>
 public sealed class BlackjackPlugin : ImlightPlugin {
@@ -44,7 +44,7 @@ public sealed class BlackjackPlugin : ImlightPlugin {
                 if (int.TryParse(action, out int bet)) {
                     Deal(c.Player, bet);
                 } else {
-                    c.Reply($"Usage: /bj <bet> to deal a hand ({MinBet}-{MaxBet} gold).");
+                    c.Reply($"Usage: .bj <bet> to deal a hand ({MinBet}-{MaxBet} gold).");
                 }
                 return;
             }
@@ -61,7 +61,7 @@ public sealed class BlackjackPlugin : ImlightPlugin {
                     break;
                 default:
                     ShowTable(c.Player, game, revealDealer: false);
-                    c.Reply("You're mid-hand: /bj hit, /bj stand or /bj double.");
+                    c.Reply("You're mid-hand: .bj hit, .bj stand or .bj double.");
                     break;
             }
         }
@@ -96,7 +96,7 @@ public sealed class BlackjackPlugin : ImlightPlugin {
         }
 
         ShowTable(player, game, revealDealer: false);
-        player.SendMessage("/bj hit, /bj stand or /bj double?");
+        player.SendMessage(".bj hit, .bj stand or .bj double?");
     }
 
     private void Hit(IPlayer player, BlackjackGame game) {
